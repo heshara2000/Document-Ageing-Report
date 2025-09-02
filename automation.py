@@ -27,8 +27,8 @@ def date_to_excel_serial(dt):
 # --- Step 1: Read input file ---
 input_file = r"E:\dil_copies\Document-Ageing-Report-\data\export.xls"
 df = pd.read_excel(input_file, engine="xlrd")
-#print(df.columns)
-
+print(df.columns)
+print(df.head())
 
 # Normalize column names: replace spaces & dots with underscores
 #df.columns = df.columns.str.replace(r"[ .]", "_", regex=True)
@@ -41,7 +41,7 @@ df.columns = (
 )
 
 # Check normalized columns
-print("Normalized columns:", df.columns.tolist())
+#print("Normalized columns:", df.columns.tolist())
 
 
 
@@ -77,9 +77,40 @@ summary_headers = [
 ]
 header_fill = PatternFill(start_color="ADD8E6", end_color="ADD8E6", fill_type="solid")
 
+def auto_adjust_column_width(ws):
+    for col in ws.columns:
+        max_length = 0
+        column = col[0].column_letter  # Get the column name (A, B, C...)
+        for cell in col:
+            try:
+                if cell.value:
+                    max_length = max(max_length, len(str(cell.value)))
+            except:
+                pass
+        adjusted_width = (max_length + 2)  # Add some padding
+        ws.column_dimensions[column].width = adjusted_width
+
+# Adjust column widths for summary sheet
+auto_adjust_column_width(summary_ws)
+
+# Adjust column widths for all account sheets
+# for sheet_name in unique_accounts:
+#     ws = wb[sheet_name]
+#     auto_adjust_column_width(ws)
+
+
+thin_border = Border(
+    left=Side(style='thin'),
+    right=Side(style='thin'),
+    top=Side(style='thin'),
+    bottom=Side(style='thin')
+)
+
+
 for col, header in enumerate(summary_headers, start=2):
     summary_ws.cell(row=4, column=col).value = header
     summary_ws.cell(row=4, column=col).fill = header_fill
+    summary_ws.cell(row=4, column=col).border = thin_border
 
 # --- Step 4: Build summary content ---
 group = df.groupby(["Comapany", "Account", "Document_currency", "Local_Currency"])
@@ -99,6 +130,9 @@ for i, row in sums.iterrows():
     summary_ws.cell(row=i+5, column=5).value = row["Amount_in_doc_curr"]
     summary_ws.cell(row=i+5, column=6).value = row["Local_Currency"]
     summary_ws.cell(row=i+5, column=7).value = row["Amount_in_local_currency"]
+    # Apply border to each cell
+    for col in range(2, 8):
+        summary_ws.cell(row=i+5, column=col).border = thin_border
 
 # --- Step 5: Create per-account sheets ---
 unique_accounts = df["Account"].unique()
@@ -106,7 +140,13 @@ unique_accounts = df["Account"].unique()
 for account in unique_accounts:
     account_df = df[df["Account"] == account].copy()
     ws = wb.create_sheet(title=str(account))
-    
+    # Adjust column widths for this sheet
+    #ws = wb[account]
+    auto_adjust_column_width(ws)
+#     for sheet_name in unique_accounts:
+# #     ws = wb[sheet_name]
+# #     auto_adjust_column_width(ws)
+
     # Headers (row 1) – include extra ageing col
     headers = [
         "Company", "Account", "Document_Date", "Document_Type", "Text",
