@@ -1,7 +1,10 @@
 import pandas as pd
 from datetime import datetime, date
 import openpyxl
-from openpyxl.styles import Font
+#from openpyxl.styles import Font
+from openpyxl.styles import Border, Side, PatternFill, Font
+
+
 
 # --- Helper function: Excel serial date ---
 def date_to_excel_serial(dt):
@@ -72,8 +75,11 @@ summary_headers = [
     "Company", "Account", "Document_currency", 
     "Amount_in_doc_curr", "Local_Currency", "Amount_in_local_currency"
 ]
+header_fill = PatternFill(start_color="ADD8E6", end_color="ADD8E6", fill_type="solid")
+
 for col, header in enumerate(summary_headers, start=2):
     summary_ws.cell(row=4, column=col).value = header
+    summary_ws.cell(row=4, column=col).fill = header_fill
 
 # --- Step 4: Build summary content ---
 group = df.groupby(["Comapany", "Account", "Document_currency", "Local_Currency"])
