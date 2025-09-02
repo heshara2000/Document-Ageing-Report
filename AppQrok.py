@@ -1,3 +1,4 @@
+from tkinter.font import Font
 import pandas as pd
 from datetime import datetime, date
 import openpyxl
@@ -30,7 +31,9 @@ wb = openpyxl.Workbook()
 # Summary sheet
 summary_ws = wb.active
 summary_ws.title = 'Summary'
-summary_ws.cell(row=1, column=1).value = f"Document Ageing Report as at {today_str}"
+# summary_ws.cell(row=1, column=1).value = f"Document Ageing Report as at {today_str}"
+summary_ws.cell(row=2, column=2).value = f"Document Ageing Report as at {today_str}"
+summary_ws.cell(row=2, column=2).font = Font(bold=True, size=14)
 
 # Summary headers row 3
 summary_headers = ['Comapany', 'Account', 'Document currency', 'Amount in doc. curr.', 'Local Currency', 'Amount in local currency']
