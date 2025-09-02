@@ -31,6 +31,9 @@ source env/bin/activate   # Linux/macOS
 pip install -r requirements.txt
 
 ⚡ Usage
+
+
+
 4.Run the main automation script:
 python automation.py
 
