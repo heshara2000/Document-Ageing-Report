@@ -72,8 +72,8 @@ summary_headers = [
     "Company", "Account", "Document_currency", 
     "Amount_in_doc_curr", "Local_Currency", "Amount_in_local_currency"
 ]
-for col, header in enumerate(summary_headers, start=1):
-    summary_ws.cell(row=3, column=col).value = header
+for col, header in enumerate(summary_headers, start=2):
+    summary_ws.cell(row=4, column=col).value = header
 
 # --- Step 4: Build summary content ---
 group = df.groupby(["Comapany", "Account", "Document_currency", "Local_Currency"])
@@ -87,12 +87,12 @@ sums = sums[abs(sums["Amount_in_local_currency"]) > 1e-5]
 
 # Write data to summary
 for i, row in sums.iterrows():
-    summary_ws.cell(row=i+4, column=1).value = row["Comapany"]
-    summary_ws.cell(row=i+4, column=2).value = row["Account"]
-    summary_ws.cell(row=i+4, column=3).value = row["Document_currency"]
-    summary_ws.cell(row=i+4, column=4).value = row["Amount_in_doc_curr"]
-    summary_ws.cell(row=i+4, column=5).value = row["Local_Currency"]
-    summary_ws.cell(row=i+4, column=6).value = row["Amount_in_local_currency"]
+    summary_ws.cell(row=i+5, column=2).value = row["Comapany"]
+    summary_ws.cell(row=i+5, column=3).value = row["Account"]
+    summary_ws.cell(row=i+5, column=4).value = row["Document_currency"]
+    summary_ws.cell(row=i+5, column=5).value = row["Amount_in_doc_curr"]
+    summary_ws.cell(row=i+5, column=6).value = row["Local_Currency"]
+    summary_ws.cell(row=i+5, column=7).value = row["Amount_in_local_currency"]
 
 # --- Step 5: Create per-account sheets ---
 unique_accounts = df["Account"].unique()
