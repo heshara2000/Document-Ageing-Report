@@ -27,8 +27,8 @@ def date_to_excel_serial(dt):
 # --- Step 1: Read input file ---
 input_file = r"E:\dil_copies\Document-Ageing-Report-\data\export.xls"
 df = pd.read_excel(input_file, engine="xlrd")
-print(df.columns)
-print(df.head())
+# print(df.columns)
+# print(df.head())
 
 # Normalize column names: replace spaces & dots with underscores
 #df.columns = df.columns.str.replace(r"[ .]", "_", regex=True)

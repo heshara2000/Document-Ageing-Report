@@ -4,15 +4,15 @@ from datetime import datetime
 # Sample data
 data = [
     {
-        "Comapany": "ABC Ltd",
-        "Account": "1001",
+        "Comapany": "UN015O",
+        "Account": "63010503",
         "Document Date": datetime(2024, 8, 1),
-        "Document Type": "Invoice",
-        "Text": "Office Supplies",
+        "Document Type": "FZ",
+        "Text": "0601530BCC701 PRCEEDS F PURC",
         "Document currency": "USD",
-        "Amount in doc. curr.": 1200,
-        "Local Currency": "LKR",
-        "Amount in local currency": 440000,
+        "Amount in doc. curr.": "12431.22 USD",
+        "Local Currency": "USD",
+        "Amount in local currency": "12431",
         "Year/month": "2024/08",
     }
     # {
@@ -44,9 +44,10 @@ data = [
 # Convert to DataFrame
 df = pd.DataFrame(data)
 
-# Save to Excel (xlsx format)
-output_path = r"E:\dil_copies\Document-Ageing-Report-\data\export.xlsx"
-df.to_excel(output_path, index=False, engine="openpyxl")
+# Save to Excel in old .xls format
+output_path = r"E:\dil_copies\Document-Ageing-Report-\data\export.xls"
+df.to_excel(output_path, index=False, engine="xlwt")
+
 
 print(f"✅ Sample data written to {output_path}")
 
