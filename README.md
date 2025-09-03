@@ -15,15 +15,6 @@ Applies table headers, borders, and formatting for better readability
 Handles multiple currencies and sums totals
 
 
-Document-Ageing-Report/
-│
-├─ data/
-│   └─ export.xls           # Input Excel file with sample data
-│
-├─ automation.py            # Main script for generating report
-├─ Final Report.xlsx        # Generated report
-└─ README.md               # This documentation
-
 
 🚀 Installation
 
@@ -38,6 +29,10 @@ source env/bin/activate   # Linux/macOS
 
 3.Install dependencies:
 pip install -r requirements.txt
+
+⚡ Usage
+
+
 
 4.Run the main automation script:
 python automation.py
