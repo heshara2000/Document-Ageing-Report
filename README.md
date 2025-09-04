@@ -19,7 +19,15 @@ Handles multiple currencies and sums totals
 🚀 Installation
 
 1.Clone this repository:
+
+
+
+
 git clone <your-repo-url>
+
+
+
+
 cd Document-Ageing-Report
 
 2.Create a virtual environment
