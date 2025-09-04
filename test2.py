@@ -4,8 +4,6 @@ import openpyxl
 from openpyxl.styles import Border, Side, PatternFill, Font, Alignment
 import os
 
-
-# --- Helper function: Excel serial date ---
 def date_to_excel_serial(dt):
     if pd.isna(dt):
         return None
@@ -23,7 +21,7 @@ def date_to_excel_serial(dt):
     return (dt - base).days
 
 
-# --- Step 1: Read input file ---
+#  Read input file
 input_file = r"E:\\dil_copies\\Document-Ageing-Report-\\data\\export.xls"
 
 if input_file.endswith(".xls"):
@@ -31,21 +29,21 @@ if input_file.endswith(".xls"):
 else:
     df = pd.read_excel(input_file, engine="openpyxl")
 
-print("✅ Data loaded. Columns:", df.columns.tolist())
+print("Data loaded. Columns:", df.columns.tolist())
 
-# Normalize column names: replace spaces & dots with underscores
+# Normalize column names
 df.columns = (
     df.columns
-    .str.replace(r"[ .]", "_", regex=True)  # replace spaces & dots
-    .str.replace(r"_+", "_", regex=True)    # merge multiple underscores
-    .str.strip("_")                         # remove leading/trailing underscores
+    .str.replace(r"[ .]", "_", regex=True)  
+    .str.replace(r"_+", "_", regex=True)    
+    .str.strip("_")                       
 )
 
 # Parse document date if available
 if "Document_Date" in df.columns:
     df["Document_Date"] = pd.to_datetime(df["Document_Date"], errors="coerce")
 
-# --- Step 2: Today’s date & serial ---
+
 today = datetime.now().date()
 today_str = today.strftime("%d.%m.%Y")
 today_serial = date_to_excel_serial(today)
@@ -54,16 +52,16 @@ today_serial = date_to_excel_serial(today)
 df["Doc_Serial"] = df["Document_Date"].apply(date_to_excel_serial)
 df["Doc_Ageing"] = today_serial - df["Doc_Serial"]
 
-# --- Step 3: Create workbook & Summary sheet ---
+#  Create workbook & Summary sheet
 wb = openpyxl.Workbook()
 summary_ws = wb.active
 summary_ws.title = "Summary"
 
-# Title row
+# Title
 summary_ws.cell(row=2, column=2).value = f"Document Ageing Report as at {today_str}"
 summary_ws.cell(row=2, column=2).font = Font(bold=True, size=14)
 
-# Headers (row 4)
+# Headers
 summary_headers = [
     "Company", "Account", "Document_currency", 
     "Amount_in_doc_curr", "Local_Currency", "Amount_in_local_currency"
@@ -88,7 +86,7 @@ for col, header in enumerate(summary_headers, start=2):
     cell.font = Font(bold=True)
     cell.alignment = header_alignment
 
-# --- Step 4: Build summary content ---
+#  summary content
 group = df.groupby(["Comapany", "Account", "Document_currency", "Local_Currency"])
 sums = group.agg({
     "Amount_in_doc_curr": "sum",
@@ -98,7 +96,7 @@ sums = group.agg({
 # Filter out zero local currency amounts
 sums = sums[abs(sums["Amount_in_local_currency"]) > 1e-5]
 
-# Write data to summary
+#  data to summary
 for i, row in sums.iterrows():
     r = i + 5
     summary_ws.cell(row=r, column=2).value = row["Comapany"]
@@ -133,7 +131,7 @@ def auto_adjust_column_width(ws):
 
 auto_adjust_column_width(summary_ws)
 
-# --- Step 5: Create per-account sheets ---
+# Create per-account sheets
 unique_accounts = df["Account"].unique()
 
 for account in unique_accounts:
@@ -146,7 +144,7 @@ for account in unique_accounts:
         "Local_Currency", "Amount_in_local_currency", "Doc_Ageing"
     ]
 
-    # Header row formatting (center-middle)
+    # Header row formatting
     for col, header in enumerate(headers, start=1):
         cell = ws.cell(row=1, column=col)
         cell.value = header
@@ -163,7 +161,7 @@ for account in unique_accounts:
 
         doc_date = row_dict.get("Document_Date")
         if pd.notna(doc_date):
-            ws.cell(row=idx, column=3).value = pd.to_datetime(doc_date).strftime("%d.%m.%Y")
+            ws.cell(row=idx, column=3).value = pd.to_datetime(doc_date).strftime("%d/%m/%Y")
         else:
             ws.cell(row=idx, column=3).value = None
         ws.cell(row=idx, column=4).value = row_dict.get("Document_Type")
@@ -174,7 +172,7 @@ for account in unique_accounts:
         ws.cell(row=idx, column=9).value = row_dict.get("Amount_in_local_currency")
         ws.cell(row=idx, column=10).value = row_dict.get("Doc_Ageing")
 
-        # Alignment: only for Document_Type (4), Document_currency (6), Local_Currency (8), Doc_Ageing (10)
+        # Alignment:
         ws.cell(row=idx, column=4).alignment = center_bottom_align
         ws.cell(row=idx, column=6).alignment = center_bottom_align
         ws.cell(row=idx, column=8).alignment = center_bottom_align
@@ -187,6 +185,6 @@ for account in unique_accounts:
 
     auto_adjust_column_width(ws)
 
-# --- Step 6: Save output ---
+
 wb.save("Final Report.xlsx")
 print("✅ Final Report.xlsx generated successfully!")
