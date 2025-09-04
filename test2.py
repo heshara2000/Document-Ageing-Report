@@ -31,6 +31,9 @@ else:
 
 print("Data loaded. Columns:", df.columns.tolist())
 
+#print(df.columns)
+# print(df.head())
+
 # Normalize column names
 df.columns = (
     df.columns
@@ -56,6 +59,7 @@ df["Doc_Ageing"] = today_serial - df["Doc_Serial"]
 wb = openpyxl.Workbook()
 summary_ws = wb.active
 summary_ws.title = "Summary"
+summary_ws.sheet_view.showGridLines = False
 
 # Title
 summary_ws.cell(row=2, column=2).value = f"Document Ageing Report as at {today_str}"
@@ -137,6 +141,7 @@ unique_accounts = df["Account"].unique()
 for account in unique_accounts:
     account_df = df[df["Account"] == account].copy()
     ws = wb.create_sheet(title=str(account))
+   
 
     headers = [
         "Company", "Account", "Document_Date", "Document_Type", "Text",
