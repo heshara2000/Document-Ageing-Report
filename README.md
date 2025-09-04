@@ -23,7 +23,7 @@ Handles multiple currencies and sums totals
 
 
 
-git clone https://github.com/heshara2000/Document-Ageing-Report-.git
+git clone https://github.com/heshara2000/Document-Ageing-Report.git
 
 
 
