@@ -31,18 +31,35 @@ git clone <your-repo-url>
 cd Document-Ageing-Report
 
 2.Create a virtual environment
+
+
+
 python -m venv env
+
+
+
 env\Scripts\activate      # Windows
+
+
+
 source env/bin/activate   # Linux/macOS
 
 3.Install dependencies:
+
+
+
 pip install -r requirements.txt
+
+
 
 ⚡ Usage
 
 
 
 4.Run the main automation script:
+
+
+
 python automation.py
 
 
